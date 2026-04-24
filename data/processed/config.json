@@ -1,0 +1,8 @@
+{
+  "ticker": "ZAR=X",
+  "start": "2014-01-01",
+  "lookback": 60,
+  "split_idx": 2555,
+  "train_size": 2555,
+  "test_size": 639
+}

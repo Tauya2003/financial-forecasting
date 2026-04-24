@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Streamlit
+.streamlit/
+
+# Large binary ML artefacts — use Git LFS or store externally
+# (keep metrics JSON and config.json — those are tracked)
+models/*.keras
+models/*.pkl
+data/processed/*.npy
+data/processed/scaler.pkl
+
+# Generated outputs (reproducible from the models)
+outputs/
+
+# Environment variables
+.env
+.env.*
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.user
