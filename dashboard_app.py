@@ -90,6 +90,30 @@ def load_cnn_lstm_model():
     return tf.keras.models.load_model(str(PROJECT_PATH / "models" / "cnn_lstm_best.keras"))
 
 
+_REQUIRED_FILES = [
+    PROJECT_PATH / "data" / "processed" / "actual_prices.npy",
+    PROJECT_PATH / "data" / "processed" / "arima_predictions.npy",
+    PROJECT_PATH / "data" / "processed" / "lstm_predictions.npy",
+    PROJECT_PATH / "data" / "processed" / "cnn_lstm_predictions.npy",
+    PROJECT_PATH / "data" / "processed" / "scaler.pkl",
+    PROJECT_PATH / "data" / "processed" / "config.json",
+    PROJECT_PATH / "models" / "arima_metrics.json",
+    PROJECT_PATH / "models" / "lstm_metrics.json",
+    PROJECT_PATH / "models" / "cnn_lstm_metrics.json",
+]
+
+_missing = [f for f in _REQUIRED_FILES if not f.exists()]
+if _missing:
+    st.error("**Missing required files — the app cannot start.**")
+    st.markdown("Copy the following files from the original machine into this project folder:")
+    for f in _missing:
+        st.code(str(f.relative_to(PROJECT_PATH)))
+    st.markdown(
+        "The model weight files (`*.keras`) also need to be copied manually into `models/` "
+        "— they are too large for git and must be transferred via USB or cloud storage."
+    )
+    st.stop()
+
 data = load_all_data()
 
 # ── Sidebar ───────────────────────────────────────────────────
@@ -210,6 +234,19 @@ elif page == "Live Forecast":
                     last_60    = live["price"].values[-LOOKBACK:]
                     last_60_sc = scaler.transform(last_60.reshape(-1, 1))
                     X_live     = last_60_sc.reshape(1, LOOKBACK, 1)
+
+                    if model_choice == "LSTM":
+                        keras_path = PROJECT_PATH / "models" / "lstm_model.keras"
+                    else:
+                        keras_path = PROJECT_PATH / "models" / "cnn_lstm_best.keras"
+
+                    if not keras_path.exists():
+                        st.error(
+                            f"**Model file not found:** `models/{keras_path.name}`\n\n"
+                            "This file is too large for git and must be copied manually "
+                            "from the original machine into the `models/` folder."
+                        )
+                        st.stop()
 
                     if model_choice == "LSTM":
                         model = load_lstm_model()
